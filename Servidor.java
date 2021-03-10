@@ -100,21 +100,18 @@ public class Servidor {
             FileInputStream fis;
 			BufferedInputStream bis;
 			BufferedOutputStream bos;
-			byte[] buffer = new byte[8192];
-
+            
             try{
-                File envio = new File("ROOT"+"docs/"+archivo);
-				fis = new FileInputStream("ROOT"+"docs/"+archivo);
+                File envio = new File("ruta");
+                byte[] arreglobytes = new byte[(int) envio.length()];
+				fis = new FileInputStream(envio);
 				bis = new BufferedInputStream(fis);
 				bos = new BufferedOutputStream(sock.getOutputStream());
-                int x;
+                
+                bis.read(arreglobytes, 0,arreglobytes.length);
+                bos.write(arreglobytes,0,arreglobytes.length);
 
-                int n = 0;
-                while ((x = bis.read(buffer)) > 0) {
-					n++;
-					bos.write(buffer, 0, x);
-				}
-
+                bos.flush();
                 bos.close();
 				fis.close();
 				bis.close();
