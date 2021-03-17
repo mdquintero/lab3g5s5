@@ -2,9 +2,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,6 +15,8 @@ import java.util.concurrent.Executors;
 public class Servidor {
 
     private static ServerSocket socket;
+
+    private final static String RAIZ = "./../../";
 
     public Servidor (int puerto){
         try {
@@ -30,30 +35,25 @@ public class Servidor {
             System.out.println("Seleccione la opción que desea realizar");
             System.out.println("1. Enviar archivos");
             String opcion = scan.next();
-            switch(opcion) {
-                case "1": {
-                    System.out.println("Seleccione el archivo a enviar entre las siguientes opciones:");
-                    System.out.println("1. Archivo1");
-                    System.out.println("2. Archivo2");
-                    String seleccionado = scan.next();
-                    System.out.println("Ingrese el puerto a utilizar");
-                    int puerto = scan.nextInt();
-                    System.out.println("Ingrese el numero de clientes a enviar el archivo");
-                    int nClientes = scan.nextInt();
-                    Servidor server = new Servidor(puerto);
-                    if(seleccionado.equals("1")){
-                        server.envioArchivos(puerto, nClientes, "archivo1");
-                        ciclo=true;
-                    }
-                    else if (seleccionado.equals("2")) {
-                        server.envioArchivos(puerto, nClientes, "archivo2");
-                        ciclo=true;
-                    }
-                    break;
-
+            if(opcion.equals("1")) {
+                
+                System.out.println("Seleccione el archivo a enviar entre las siguientes opciones:");
+                System.out.println("1. Archivo1");
+                System.out.println("2. Archivo2");
+                String seleccionado = scan.next();
+                System.out.println("Ingrese el puerto a utilizar");
+                int puerto = scan.nextInt();
+                System.out.println("Ingrese el numero de clientes a enviar el archivo");
+                int nClientes = scan.nextInt();
+                Servidor server = new Servidor(puerto);
+                if(seleccionado.equals("1")){
+                    server.envioArchivos(puerto, nClientes, "archivo1");
+                    ciclo=true;
                 }
-                default:
-                    System.out.println("Ingrese una opción correcta");
+                else if (seleccionado.equals("2")) {
+                    server.envioArchivos(puerto, nClientes, "archivo2");
+                    ciclo=true;
+                }
             }
         }
 
@@ -100,16 +100,32 @@ public class Servidor {
             FileInputStream fis;
 			BufferedInputStream bis;
 			BufferedOutputStream bos;
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH_mm_ss");  
+			LocalDateTime fecha = LocalDateTime.now(); 
+			String titulo = dtf.format(fecha)+"-log";
+			File log = new File(RAIZ+"logs/server/"+titulo+".txt");
+			dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             
             try{
-                File envio = new File("ruta");
+
+                File envio = new File("RUTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                 byte[] arreglobytes = new byte[(int) envio.length()];
 				fis = new FileInputStream(envio);
 				bis = new BufferedInputStream(fis);
 				bos = new BufferedOutputStream(sock.getOutputStream());
-                
+
+                FileWriter fw = new FileWriter(log, true);
+                fw.write("El archivo a enviar es " + archivo + " con un peso de " + envio.length() + " bytes" + "\n");
+				fw.write("El cliente al que se envia este archivo es el cliente " + id);
+                long tInicial = System.currentTimeMillis();
+
                 bis.read(arreglobytes, 0,arreglobytes.length);
                 bos.write(arreglobytes,0,arreglobytes.length);
+
+                int tFinal = (int) (System.currentTimeMillis() - tInicial);
+                fw.write("El archivo se ha enviado exitosamente en un tiempo de "+ tFinal + " milisegundos");
+                fw.write("Total de bytes enviados:  "+ envio.length());
 
                 bos.flush();
                 bos.close();
