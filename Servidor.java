@@ -31,6 +31,8 @@ public class Servidor {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
 		Boolean ciclo = false;
+        String hc1 = archivo1.hashCode();
+        String hc2 = archivo2.hashCode();
 		while(!ciclo) {
             System.out.println("Seleccione la opción que desea realizar");
             System.out.println("1. Enviar archivos");
@@ -47,11 +49,11 @@ public class Servidor {
                 int nClientes = scan.nextInt();
                 Servidor server = new Servidor(puerto);
                 if(seleccionado.equals("1")){
-                    server.envioArchivos(puerto, nClientes, "archivo1");
+                    server.envioArchivos(puerto, nClientes, "archivo1", hc1);
                     ciclo=true;
                 }
                 else if (seleccionado.equals("2")) {
-                    server.envioArchivos(puerto, nClientes, "archivo2");
+                    server.envioArchivos(puerto, nClientes, "archivo2", hc2);
                     ciclo=true;
                 }
             }
@@ -61,7 +63,7 @@ public class Servidor {
     }
 
 
-    public void envioArchivos(int puerto, int nClientes, String archivo){
+    public void envioArchivos(int puerto, int nClientes, String archivo, String hashc){
         ExecutorService executor = Executors.newFixedThreadPool(nClientes);
 
         for(int i=0; i<nClientes; i++){
@@ -70,7 +72,7 @@ public class Servidor {
                 Socket sock = socket.accept();
 
                 System.out.println("Conexión con cliente " + i + " iniciada");
-                Hilo hilo = new Hilo(i, archivo, sock);
+                Hilo hilo = new Hilo(i, archivo, sock, hashc);
                 executor.execute(hilo);
             }
             catch (IOException e){
@@ -88,10 +90,11 @@ public class Servidor {
         
         private Socket sock=null;
 
-        public Hilo(int id, String archivo, Socket sock){
+        public Hilo(int id, String archivo, Socket sock, String hashc){
             this.id=id;
             this.archivo=archivo;
             this.sock=sock;
+            this.hashc = hashc;
         }
 
         public void run(){
