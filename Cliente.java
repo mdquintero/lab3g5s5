@@ -2,6 +2,10 @@ package cliente;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -24,8 +28,6 @@ public class Cliente extends Thread{
 
 	private InputStream inputs;
 	
-
-
 	public Cliente(int id){
 		this.id = id;
 		try {
@@ -53,23 +55,31 @@ public class Cliente extends Thread{
 
 		byte[] respuesta;
 		String mordiscos;
+
 		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-1"); 
 			FileWriter filew = new FileWriter(log, true);
 			filew.write("Se descargará el archivo video.mp4 y se guardará como test.mp4" + "\n");
 			FileOutputStream fileo = new FileOutputStream("./docs/test-"+id+".mp4");
 			BufferedOutputStream bufferedos = new BufferedOutputStream(fileo);
-			byte[] bytes = new byte[bufferSize];
+			byte[] bytes = new byte[8192];
 			int count;
-			System.out.println("Empieza la transferencia de los archivos");  // // // // // // // // // // // // // // // // // 
+			System.out.println("Empieza la transferencia de los archivos");
 			int n = 0;
 			long initio = System.currentTimeMillis();
-			while ((count = is.read(bytes)) >= 0) {
+			while ((count = bufferedr.read(bytes)) >= 0) {
 				n++;
 				bufferedos.write(bytes, 0, count);
 				//System.out.println("Descargando el segmento " + n);
 			}
+			printw.write("Fin".getBytes("UTF-8"));
 			int finito = (int) (System.currentTimeMillis() - initio);
 			String tiempo = "";
+			Byte[] hashL = md.digest(Files.readAllBytes(Paths.get("./docs/test-"+id+".mp4")));
+			Byte[] hash = new Byte[fileContent.length];
+			bufferedr.read(hash);
+			boolean b = Arrays.equals(hashL, hash);
+
 			if(finito<1000 && finito >99) {
 				tiempo = "0." + finito;
 			} else {
@@ -79,18 +89,21 @@ public class Cliente extends Thread{
 			File chivaso = new File("./docs/test.mp4");
 			filew.write("El tama�o del archivo es: " + chivaso.length() + " bytes" + "\n");
 			filew.write("El archivo se descarg� con �xito en un tiempo de " + tiempo + " segundos" + "\n");
+			filew.write("El archivo se descargo correctamente? " + b + "\n");
 			filew.write("Total de segmentos descargados: " + n + " segmentos" + "\n");
 			System.out.println("Tiempo total de descarga: " + tiempo + " segundos");
 			System.out.println("Finaliza la descarga");
 			bufferedos.close();
 			inputs.close();
 			pw.println("Descarga finalizada. C�digo:1");
-			System.out.println(spaghetti);
 			System.out.println("Desconectado del servidor");
 			filew.close();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		}
+		catch(NoSuchAlgorithmException e) {
+			e.printStackTrace();
 		}
 	}
 
