@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -24,7 +25,6 @@ public class Servidor {
         try {
 			socket = new ServerSocket(puerto);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -58,7 +58,7 @@ public class Servidor {
                 }
             }
         }
-
+        scan.close();
 
     }
 
@@ -114,11 +114,10 @@ public class Servidor {
 			String titulo = dtf.format(fecha)+"-log";
 			File log = new File(RAIZ+"logs/server/"+titulo+".txt");
             dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-			BufferedReader bufferedr = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			byte[] buffer = new byte[8192];
             
             try{
-
+                BufferedInputStream bufferedr = new BufferedInputStream(sock.getInputStream());
                 File envio = new File(RAIZ + "data/" + archivo + ".txt");
                 byte[] arreglobytes = new byte[(int) envio.length()];
 				fis = new FileInputStream(envio);
@@ -133,10 +132,9 @@ public class Servidor {
                 long tInicial = System.currentTimeMillis();
 				int count;
 				while ((count = bis.read(buffer)) > 0) {
-					n++;
 					bos.write(buffer, 0, count);
 				}
-                Byte[] fin = new Byte["Fin".getBytes("UTF-8").length];
+                byte[] fin = new byte["Fin".getBytes("UTF-8").length];
                 bufferedr.read(fin);
                 bos.write(md.digest(arreglobytes));
 
@@ -148,6 +146,7 @@ public class Servidor {
                 bos.close();
 				fis.close();
 				bis.close();
+                fw.close();
             }
             catch(IOException e) {
                 e.printStackTrace();

@@ -1,13 +1,11 @@
-package cliente;
-
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.time.LocalDateTime;    
 
@@ -15,16 +13,15 @@ import java.time.LocalDateTime;
 public class Cliente extends Thread{
 	
 	private Socket socket;
-	private BufferedReader bufferedr;
-	private PrintWriter printw;
-	private static int bufferSize;
-	private String hash;
+	private BufferedInputStream bufferedr;
+	private BufferedOutputStream printw;
 	private int id;
 	public final static String hola = "HOLA";
 	public final static String ok = "OK";
 	public final static String error = "ERROR";
 	public final static int puerto = 6969;
 	public final static String IP = "";
+    private final static String RAIZ = "./../../";
 
 	private InputStream inputs;
 	
@@ -36,9 +33,8 @@ public class Cliente extends Thread{
 			System.out.println("Se logra conectar al servidor con IP: " + IP + " en el puerto:  " + puerto);
 			inputs = socket.getInputStream();
 
-			bufferSize = socket.getReceiveBufferSize();
-			printw = new PrintWriter(socket.getOutputStream(), true);
-			bufferedr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			printw = new BufferedOutputStream(socket.getOutputStream());
+			bufferedr = new BufferedInputStream(socket.getInputStream());
 			System.out.println("Ya puede enviar los archivos");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,17 +46,14 @@ public class Cliente extends Thread{
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH_mm_ss");  
 		LocalDateTime fecha = LocalDateTime.now(); 
 		String titulo = dtf.format(fecha)+"-log";
-		File log = new File(RAIZ+"logs/server/"+titulo+".txt");
+		File log = new File(RAIZ+"/logs/client/"+titulo+".txt");
 		dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-
-		byte[] respuesta;
-		String mordiscos;
 
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-1"); 
 			FileWriter filew = new FileWriter(log, true);
-			filew.write("Se descargará el archivo video.mp4 y se guardará como test.mp4" + "\n");
-			FileOutputStream fileo = new FileOutputStream("./docs/test-"+id+".mp4");
+			filew.write("Se descargará el archivo video.txt y se guardará como test.txt" + "\n");
+			FileOutputStream fileo = new FileOutputStream("./ArchivosRecibidos/test-"+id+".txt");
 			BufferedOutputStream bufferedos = new BufferedOutputStream(fileo);
 			byte[] bytes = new byte[8192];
 			int count;
@@ -75,8 +68,8 @@ public class Cliente extends Thread{
 			printw.write("Fin".getBytes("UTF-8"));
 			int finito = (int) (System.currentTimeMillis() - initio);
 			String tiempo = "";
-			Byte[] hashL = md.digest(Files.readAllBytes(Paths.get("./docs/test-"+id+".mp4")));
-			Byte[] hash = new Byte[fileContent.length];
+			byte[] hashL = md.digest(Files.readAllBytes(Paths.get("./ArchivosRecibidos/test-"+id+".txt")));
+			byte[] hash = new byte[hashL.length];
 			bufferedr.read(hash);
 			boolean b = Arrays.equals(hashL, hash);
 
@@ -86,7 +79,7 @@ public class Cliente extends Thread{
 				finito = finito/1000;
 				tiempo += finito;
 			}
-			File chivaso = new File("./docs/test.mp4");
+			File chivaso = new File("./ArchivosRecibidos/test.txt");
 			filew.write("El tama�o del archivo es: " + chivaso.length() + " bytes" + "\n");
 			filew.write("El archivo se descarg� con �xito en un tiempo de " + tiempo + " segundos" + "\n");
 			filew.write("El archivo se descargo correctamente? " + b + "\n");
@@ -95,11 +88,9 @@ public class Cliente extends Thread{
 			System.out.println("Finaliza la descarga");
 			bufferedos.close();
 			inputs.close();
-			pw.println("Descarga finalizada. C�digo:1");
 			System.out.println("Desconectado del servidor");
 			filew.close();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		catch(NoSuchAlgorithmException e) {
@@ -119,7 +110,7 @@ public class Cliente extends Thread{
 			clientes[i].run();
 			
 		}
-		
+		sc.close();
 	}
 }
 
