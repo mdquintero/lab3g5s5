@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class Servidor {
 
     private static ServerSocket socket;
 
-    private final static String RAIZ = "./../../";
+    private final static String RAIZ = "./";
 
     public Servidor (int puerto){
         try {
@@ -76,15 +77,11 @@ public class Servidor {
 
                 System.out.println("Conexión con cliente " + i + " iniciada");
                 Hilo hilo = new Hilo(i, archivo, sock);
-                hilos[i] = hilo;
+                executor.execute(hilo);
             }
             catch (IOException e){
                 e.printStackTrace();
             }
-        }
-
-        for(int i = 0; i < nClientes; i++){
-            executor.execute(hilos[i]);
         }
     }
 
@@ -114,29 +111,35 @@ public class Servidor {
 			String titulo = dtf.format(fecha)+"-log";
 			File log = new File(RAIZ+"logs/server/"+titulo+".txt");
             dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-			byte[] buffer = new byte[8192];
             
             try{
+                byte[] hash = calculateMD5Digest(new FileInputStream(RAIZ + "data/" + archivo + ".txt"));
+                byte[] buffer = new byte[sock.getSendBufferSize()];
                 BufferedInputStream bufferedr = new BufferedInputStream(sock.getInputStream());
                 File envio = new File(RAIZ + "data/" + archivo + ".txt");
                 byte[] arreglobytes = new byte[(int) envio.length()];
 				fis = new FileInputStream(envio);
 				bis = new BufferedInputStream(fis);
 				bos = new BufferedOutputStream(sock.getOutputStream());
+		        System.out.println("Envio iniciado");
 
                 FileWriter fw = new FileWriter(log, true);
                 fw.write("El archivo a enviar es " + archivo + " con un peso de " + envio.length() + " bytes" + "\n");
                 fw.write("El cliente al que se envia este archivo es el cliente " + id);
-                bis.read(arreglobytes, 0,arreglobytes.length);
-                MessageDigest md = MessageDigest.getInstance("SHA-1"); 
+                //bis.read(arreglobytes, 0,arreglobytes.length);
+                MessageDigest md = MessageDigest.getInstance("MD5"); 
                 long tInicial = System.currentTimeMillis();
-				int count;
+                int count = 0;
+                bos.write(hash);
+                Thread.sleep(2000);
+			    while (bufferedr.available() > 0) {
+				    bufferedr.read(arreglobytes);
+				}
+                Thread.sleep(2000);
 				while ((count = bis.read(buffer)) > 0) {
 					bos.write(buffer, 0, count);
 				}
-                byte[] fin = new byte["Fin".getBytes("UTF-8").length];
-                bufferedr.read(fin);
-                bos.write(md.digest(arreglobytes));
+                
 
                 int tFinal = (int) (System.currentTimeMillis() - tInicial);
                 fw.write("El archivo se ha enviado exitosamente en un tiempo de "+ tFinal + " milisegundos");
@@ -151,9 +154,20 @@ public class Servidor {
             catch(IOException e) {
                 e.printStackTrace();
             }
-            catch(NoSuchAlgorithmException e) {
+            catch(Exception e) {
                 e.printStackTrace();
             }
+            return;
+        }
+
+        public byte[] calculateMD5Digest(InputStream is) throws NoSuchAlgorithmException, IOException {
+            int bytesRead = 0;
+            byte[] buffer = new byte[2048];
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            while ((bytesRead = is.read(buffer)) != -1) {
+              md5.update(buffer, 0, bytesRead);
+            }
+            return md5.digest();
         }
         
     }
