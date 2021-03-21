@@ -1,0 +1,25 @@
+Se descargará el archivo video.txt y se guardará como test.txt
+El tama?o del archivo es: 16601588 bytes
+El archivo se descarg? con ?xito en un tiempo de 277 segundos
+El archivo se descargo correctamente? false
+Total de segmentos descargados: 5220 segmentos
+Se descargará el archivo video.txt y se guardará como test.txt
+El tama?o del archivo es: 32962420 bytes
+El archivo se descarg? con ?xito en un tiempo de 282 segundos
+El archivo se descargo correctamente? false
+Total de segmentos descargados: 10548 segmentos
+Se descargará el archivo video.txt y se guardará como test.txt
+El tama?o del archivo es: 26368988 bytes
+El archivo se descarg? con ?xito en un tiempo de 282 segundos
+El archivo se descargo correctamente? false
+Total de segmentos descargados: 8017 segmentos
+Se descargará el archivo video.txt y se guardará como test.txt
+El tama?o del archivo es: 57786728 bytes
+El archivo se descarg? con ?xito en un tiempo de 277 segundos
+El archivo se descargo correctamente? false
+Total de segmentos descargados: 17642 segmentos
+Se descargará el archivo video.txt y se guardará como test.txt
+El tama?o del archivo es: 20371380 bytes
+El archivo se descarg? con ?xito en un tiempo de 282 segundos
+El archivo se descargo correctamente? false
+Total de segmentos descargados: 6175 segmentos

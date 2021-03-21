@@ -1,0 +1,5 @@
+Se descargará el archivo video.txt y se guardará como test.txt
+El tama?o del archivo es: 250000000 bytes
+El archivo se descarg? con ?xito en un tiempo de 31 segundos
+El archivo se descargo correctamente? true
+Total de segmentos descargados: 4942 segmentos
