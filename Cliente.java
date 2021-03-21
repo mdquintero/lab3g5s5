@@ -22,13 +22,14 @@ public class Cliente extends Thread{
 	public final static String ok = "OK";
 	public final static String error = "ERROR";
 	public final static int puerto = 25687;
-	public final static String IP = "";
+	public static String IP = "";
     private final static String RAIZ = "./";
 
 	private InputStream inputs;
 	
-	public Cliente(int id){
+	public Cliente(int id, String ip){
 		this.id = id;
+		IP = ip;
 		try {
 			System.out.println("Se conecta al servidor con IP:  " + IP + " en el puerto:  " + puerto);
 			socket = new Socket(IP, puerto);
@@ -117,11 +118,13 @@ public class Cliente extends Thread{
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Ingrese la cantidad de clientes:");
 		int numClientes = sc.nextInt();
+		System.out.println("Ingrese la ip a la que se quiere conectar:");
+		String ip = sc.nextLine();
 		Cliente[] clientes = new Cliente[numClientes];
 		ExecutorService executor = Executors.newFixedThreadPool(numClientes);
 
 		for(int i = 0; i<clientes.length;i++) {
-			clientes[i] = new Cliente(i);
+			clientes[i] = new Cliente(i, ip);
 			executor.execute(clientes[i]);
 		}
 		sc.close();
