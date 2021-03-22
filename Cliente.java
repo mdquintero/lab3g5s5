@@ -1,7 +1,5 @@
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.format.DateTimeFormatter;
@@ -118,6 +116,7 @@ public class Cliente extends Thread{
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Ingrese la cantidad de clientes:");
 		int numClientes = sc.nextInt();
+		sc.nextLine();
 		System.out.println("Ingrese la ip a la que se quiere conectar:");
 		String ip = sc.nextLine();
 		Cliente[] clientes = new Cliente[numClientes];
@@ -130,7 +129,6 @@ public class Cliente extends Thread{
 		sc.close();
 	}
 }
-
 
 
 
