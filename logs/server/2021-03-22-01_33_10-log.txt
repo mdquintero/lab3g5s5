@@ -1,0 +1,8 @@
+El archivo a enviar es archivo1 con un peso de 100000000 bytes
+El cliente al que se envia este archivo es el cliente 7El archivo se ha enviado exitosamente en un tiempo de 22060 milisegundosTotal de bytes enviados:  100000000El archivo a enviar es archivo1 con un peso de 100000000 bytes
+El cliente al que se envia este archivo es el cliente 4El archivo se ha enviado exitosamente en un tiempo de 23677 milisegundosTotal de bytes enviados:  100000000El archivo a enviar es archivo1 con un peso de 100000000 bytes
+El cliente al que se envia este archivo es el cliente 0El archivo se ha enviado exitosamente en un tiempo de 26490 milisegundosTotal de bytes enviados:  100000000El archivo a enviar es archivo1 con un peso de 100000000 bytes
+El cliente al que se envia este archivo es el cliente 5El archivo se ha enviado exitosamente en un tiempo de 26694 milisegundosTotal de bytes enviados:  100000000El archivo a enviar es archivo1 con un peso de 100000000 bytes
+El cliente al que se envia este archivo es el cliente 1El archivo se ha enviado exitosamente en un tiempo de 26704 milisegundosTotal de bytes enviados:  100000000El archivo a enviar es archivo1 con un peso de 100000000 bytes
+El cliente al que se envia este archivo es el cliente 9El archivo se ha enviado exitosamente en un tiempo de 25432 milisegundosTotal de bytes enviados:  100000000El archivo a enviar es archivo1 con un peso de 100000000 bytes
+El cliente al que se envia este archivo es el cliente 6El archivo se ha enviado exitosamente en un tiempo de 25517 milisegundosTotal de bytes enviados:  100000000

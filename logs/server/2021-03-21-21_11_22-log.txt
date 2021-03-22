@@ -1,0 +1,2 @@
+El archivo a enviar es archivo2 con un peso de 250000000 bytes
+El cliente al que se envia este archivo es el cliente 0El archivo se ha enviado exitosamente en un tiempo de 14847 milisegundosTotal de bytes enviados:  250000000
